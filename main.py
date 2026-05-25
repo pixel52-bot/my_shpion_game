@@ -3,125 +3,30 @@ import time
 import random
 import json
 
-# Нужные переменные для игры:
-classic_or_chaos = 0  # 0 - Классика; 1 - Хаос
-is_game = True  # игра запущена
-themes = {}  # Файлы в storage.json
+#Подключение своих модулей:
+import themes
 
+# Нужные переменные для игры:
+is_game = True  # Игра запущена
+themes = themes.json_load() # Словарь тем со словами
 
 # Нужные функции:
-def json_load():
-    '''
-    Проверка try-expect: если есть файл с темами - чтение и добавление в словарь themes, если нет - добавление 4 встроенных тем в themes.
-    '''
-    try:
-        with open('storage.json', 'r', encoding='utf-8') as file:
-            return json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return {
-            "Локации": [
-                "Школа", "Детский сад", "Университет", "Больница", "Поликлиника", "Аптека",
-                "Магазин", "Супермаркет", "Рынок", "Торговый центр", "Банк", "Почта",
-                "Парк", "Зоопарк", "Цирк", "Детская площадка", "Стадион", "Бассейн",
-                "Кинотеатр", "Театр", "Музей", "Библиотека", "Выставка", "Концерт",
-                "Ресторан", "Кафе", "Столовая", "Пиццерия", "Макдоналдс", "Кофейня",
-                "Пляж", "База отдыха", "Лес", "Горы", "Река", "Озеро", "Деревня", "Дача",
-                "Аэропорт", "Вокзал", "Метро", "Остановка", "Заправка", "Автомойка",
-                "Отель", "Хостел", "Подъезд", "Лифт", "Квартира", "Кухня", "Ванная",
-                "Тренажерный зал", "Фитнес-клуб", "Салон красоты", "Парикмахерская",
-                "Полиция", "Пожарная часть", "Суд", "Тюрьма", "Военная база", "Стройка",
-                "Офис", "Склад", "Завод", "Мастерская", "Гараж", "Чердак", "Подвал",
-                "Корабль", "Лодка", "Подводная лодка", "Самолет", "Вертолет", "Поезд",
-                "Автобус", "Такси", "Трамвай", "Троллейбус", "Грузовик", "Космос",
-                "Станция МКС", "Луна", "Марс", "Пустыня", "Джунгли", "Пещера",
-                "Церковь", "Замок", "Дворец", "Музей искусств", "Планетарий", "Аквапарк",
-                "Каток", "Боулинг", "Бильярд", "Ночной клуб", "Караоке", "Тир", "Рыбалка",
-                "Охота", "Огород", "Теплица", "Пасека", "Ферма", "Конюшня",
-            ],
-            "Clash Royal": [
-                "Рыцарь", "Лучницы", "Гигант", "Бомбер", "Принцесса(Башня)", "Скелеты", "Гоблины",
-                "Всадник на кабане", "Мушкетер", "Мини П.Е.К.К.А.", "Валькирия", "Принц", "Мини-генераторы",
-                "Дракончик", "Армия скелетов", "Ведьма", "Воздушный шар", "Три мушкетерки", "Летучка",
-                "Варвары", "Орда миньонов", "Гоблины-копейщики", "Гигантский скелет", "П.Е.К.К.А.",
-                "Миньоны", "Королевский гигант", "Огненный дух", "Ледяной дух", "Элитные варвары",
-                "Мегаминьон", "Ледяной колдун", "Шахтер", "Принцесса", "Адская Гончая", "Спарки",
-                "Дровосек", "Громовержец", "Бандитка", "Ночная ведьма", "Магический лучник", "Летучие мыши",
-                "Королевский призрак", "Всадник на баране (PЭМ)", "Палач", "Крестьянин", "Охотник",
-                "Электрический дракон", "Стенобои", "Целительница-воин", "Королевские кабаны", "Лоза",
-                "Мегарыцарь", "Рыбак", "Электрический гигант", "Ведьмина бабушка", "Золотой рыцарь", "Стражи",
-                "Король скелетов", "Королева лучниц", "Шустрый шахтёр", "Монах", "Императрица духов",
-                "Маленький принц", "Электрический дух", "Дух исцеления", "Феникс", "Темный принц", "Пушка на колёсах",
-                "Стрелы", "Огненный шар", "Ракета", "Молния", "Разряд", "Зеркало", "Ярость", "Руническая гигантша",
-                "Заморозка", "Яд", "Бревно", "Торнадо", "Клон", "Землетрясение", "Снежок", "Берсеркша",
-                "Королевская почта", "Гоблинская бочка", "Бочка со скелетами", "Варварская бочка", "Гигантский гоблин",
-                "Гоблинское проклятие", "Бездна", "Канонир (башня)", "Графиня (башня)", "Повар (башня)",
-                "Пушка", "Тесла", "Мортира", "Башня-бомбежка", "Адская башня", "Арбалет", "Огненная лучница",
-                "Сборщик эликсира", "Надгробие", "Хижина гоблинов", "Хижина варваров", "Печь", "Костяные драконы",
-                "Клетка с гоблином", "Гоблинский бур", "Ледяной голем", "Голем", "Банда гоблинов", "Рекруты",
-                "Разбойники", "Элексирный голем", "Гоблин с дротиками", "Подозрительный куст", "Таран", "Колдун",
-                "Пламенный дракон", "Кладбище", "Гоблинская машина", "Главная бандитка", "Гоблинштейн",
-                "Гоблин-подрывник",
-            ],
-            "Видеоигры": [
-                "Minecraft", "Counter-strike 2 (CS 2)", "Dota 2", "GTA 5", "Sims", "Roblox", "Fortnite", "PUBG",
-                "Terraria",
-                "Valorant", "Portal 2", "Call of Duty", "Team fortress 2", "Rust", "Genshin Impact", "Cyberpunk 2077",
-                "War Thunder", "World of Tanks", "Hello Neighbor", "Subway Surfers", "Free Fire", "Clash of clans",
-                "Need for Speed",
-                "Among as", "Clash Royal", "Temple Run", "Fruit Ninja", "Angry Birds", "Brawl Stars", "Homescapes",
-                "Hill climb racing",
-                "Tom", "Geometry dash", "Flappy bird", "Hay Day", "Shadow fight", "Sonic", "stumble guys", "Tetris",
-                "Chess", "Checkers", "Block blast", "Granny",
-            ],
-            "Minecraft": [
-                "Бедрок", "Булыжник", "Глубинный сланец", "Туф", "Кальцит", "Диорит", "Андезит", "Гранит",
-                "Земля", "Подзол", "Мицелий", "Дерн", "Грязь", "Плотная грязь", "Глина", "Терракота",
-                "Песок", "Красный песок", "Гравий", "Обсидиан", "Плачущий обсидиан", "Магма",
-                "Лед", "Плотный лед", "Синий лед", "Снег", "Слой снега", "Плотный снег",
-                "Дубовое бревно", "Березовое бревно", "Еловое бревно", "Тропическое бревно",
-                "Акациевое бревно", "Темное дубовое бревно", "Мангровое бревно", "Вишневое бревно",
-                "Обтесанное бревно", "Доски", "Ступеньки", "Плита", "Забор", "Калитка", "Дверь", "Люк",
-                "Угольная руда", "Железная руда", "Медная руда", "Золотая руда", "Редстоуновая руда",
-                "Лазуритовая руда", "Алмазная руда", "Изумрудная руда", "Позолоченный чернит",
-                "Древние обломки", "Незеритовый скрап", "Незеритовый слиток", "Медный слиток",
-                "Аметистовый кластер", "Осколок аметиста", "Эхо-осколок", "Осколок призмарина",
-                "Незерак", "Камень Энда", "Песок душ", "Почва душ", "Базальт", "Чернит",
-                "Искаженный грибок", "Багровый грибок", "Светокамень", "Стержень Энда",
-                "Пурпурный блок", "Яйцо дракона", "Скорлупа шалкера", "Шалкеровый ящик",
-                "Поршень", "Липкий поршень", "Наблюдатель", "Раздатчик", "Выбрасыватель",
-                "Повторитель", "Компаратор", "Рычаг", "Кнопка", "Нажимная плита", "Мишень",
-                "Музыкальный блок", "Проигрыватель", "Лампа", "Датчик дневного света",
-                "Громоотвод", "Автоматический верстак", "Калиброванный скалковый сенсор",
-                "Подзорная труба", "Щит", "Трезубец", "Арбалет", "Лук", "Огнево", "Поводок",
-                "Бирка", "Седло", "Конская броня", "Незеритовый шлем", "Незеритовый нагрудник",
-                "Незеритовые поножи", "Незеритовые ботинки", "Элитра", "Тотем бессмертия",
-                "Золотая морковь", "Зачарованное золотое яблоко", "Тушеное кроличье мясо",
-                "Ломтик арбуза", "Ягода светящаяся", "Хорус", "Пузырек опыта", "Глаз Эндера",
-                "Слеза Гаста", "Сгусток магмы", "Дыхание дракона", "Зелье невидимости"
-            ]
-        }
-
-
-themes = json_load()
-
 
 def welcome():
-    '''
+    """
     Встреча и представления программы пользователю при запуске.
-    '''
+    """
     print('-' * 100)
     print('\n' * 50)
     print('-' * 100)
     print('Вас встречает игра "Шпион"')
     print('Перед началом игры, прошу ознакомиться с правилами! Заранее благодарю за внимане!')
     print('-' * 100)
-    time.sleep(4)
-
 
 def main_menu():
-    '''
+    """
     Главное меню программы, которое возвращаеться после каждого действия.
-    '''
+    """
     print('\n' * 50)
     print('-' * 100)
     print('Главное меню:')
@@ -129,27 +34,33 @@ def main_menu():
     print('2. Создать новую игру')
     print('3. Добавить или удалить тему со словами')
     print('4. Просмотр тем со словами')
+    print('5. Выйти из игры')
     print('-' * 100)
 
-
-def distribution_menu(x):
-    '''
-    Распределяющее меню, которое появляеться после выбранного действия пользователем и отправляет его в опрделённую функцию.
-    '''
+def distribution_menu(x: int, themes: dict):
+    """
+    Распределяющее меню, которое появляеться после выбранного действия пользователем и отправляет его в опрделённую функцию
+    :args:
+    1. Выбор действия от пользователя.
+    2. Словарь с темами и словами.
+    :retun: Возвращает True или False для дальнейшей проверки в основном цикле.
+    """
     if x == 1:
         rules()
     elif x == 2:
-        game()
+        game(themes)
     elif x == 3:
-        general_delete_create_theme()
-    else:
+        general_delete_create_theme(themes)
+    elif x == 4:
         see_themes(themes)
-
+    else:
+        return False
+    return True
 
 def rules():
-    '''
+    """
     Функция идущая после распределяющего меню (distribution_menu), которая предоставляет осноные правила игры.
-    '''
+    """
     print('-' * 150)
     print('-------------Основные Правила игры--------------')
     print('0. Вы указываете кол-во игроков, которые примут участие в игре (минимум 3, максимум 10)')
@@ -177,26 +88,30 @@ def rules():
     print('-------СПАСИБО ЗА ВНИМАНИЕ И ХОРОШЕЙ ИГРЫ!--------')
     print('-' * 150)
 
-
-def game():
-    '''
+def game(themes: dict):
+    """
     Функция идущая после распределяющего меню (distribution_menu), которая отвечает за игру и распределяет информацию по другим функциям.
-    '''
-    if search_themes() == True:
+    arg: Принимает словарь с темами и словами.
+    """
+    if search_themes(themes):
         lst_players = players()
-        user_theme = choice_theme()
-        choice = game_mode()
-        if choice == 1:
-            chaos(lst_players, user_theme)
-        else:
-            classic(lst_players, user_theme)
-    questions(user_theme)
+        user_theme = choice_theme(themes)
+        choice_user = game_mode()
+        chaos_or_classic(choice_user, user_theme, lst_players, themes)
 
+def chaos_or_classic(choice_user: int, user_theme: int, lst_players: list, themes: dict):
+    if choice_user == 1:
+        chaos(lst_players, user_theme, themes)
+    else:
+        classic(lst_players, user_theme, themes)
+    questions(user_theme, themes)
 
-def search_themes():
-    '''
+def search_themes(themes: dict):
+    """
     Одна из вспомогательных функций основной функции game. Она проверяет если есть доступные темы для игры.
-    '''
+    :arg: Принимает словарь с темами и словами.
+    :return: Возвращает True или False для дальнейшей проверки в функции game.
+    """
     if themes == {}:
         print('-' * 100)
         print('У вас нет доступных тем, создайте хотя бы 1 тему со словами!')
@@ -206,50 +121,57 @@ def search_themes():
     else:
         return True
 
-
 def players():
-    '''
-    Одна из вспомогательных функций основной функции game. Она делает список игроков.
-    '''
+    """
+    Одна из вспомогательных функций основной функции game. Она создает список игроков.
+    :return: Возвращает список игроков в функцию game.
+    """
     while True:
         raw_input = input('Введите имена разных игроков через пробел или их количество: ').split()
         if len(raw_input) == 1 and raw_input[0].isdigit():
             count_players = int(raw_input[0])
-            lst_players = [f'Игрок {i + 1}' for i in range(count_players)]
+            lst_players = []
+            for val in range(count_players):
+                lst_players.append(f'Игрок {val + 1}')
         else:
             lst_players = raw_input
         if 3 <= len(set(lst_players)) <= 10:
             print(f"Отлично! Состав ({len(lst_players)} чел.): {', '.join(lst_players)}")
+            print('-' * 100)
             break
         else:
             print(f"Ошибка! Нужно от 3 до 10 игроков (сейчас: {len(lst_players)}).")
     return lst_players
 
+def num_shpion(lst_players: list):
+    """
 
-def num_shpion(lst_players):
+    """
     if len(lst_players) >= 5:
         print('Нажмите "1" если хотите оставить 1 Шпиона и "2" если поставить 2 Шпиона')
         return result_input(2)
     else:
         return 1
 
-
-def choice_theme():
-    '''
-    Одна из вспомогательных функций основной функции game. Она предоставляет все темы, котрые есть в словаре themes.
-    '''
+def choice_theme(themes: dict):
+    """
+    Одна из вспомогательных функций основной функции game. Она предоставляет все темы, котрые есть в словаре themes и из которых пользователь должен выбрать одну.
+    :arg: Принимает словарь с темами (themes)
+    :return: Направляет во вспомогательную функцию (result_input), в которой проверяеться ввод пользователя.
+    """
     print('-' * 50)
     print('Выбор темы:')
-    for val in range(len(themes)):
-        print(f'{val + 1}. {list(themes.keys())[val]}')
+    lst_themes = list(themes)
+    for index, theme in enumerate(lst_themes, start=1):
+        print(f'{index}. {theme}')
     print('-' * 50)
     return result_input(len(themes))
 
-
 def game_mode():
-    '''
-    Одна из вспомогательных функций основной функции game. Она предоставляет 2 режима игры, которые должен выбрать пользователь
-    '''
+    """
+    Одна из вспомогательных функций основной функции game. Она предоставляет 2 режима игры, которые должен выбрать пользователь.
+    :return: Направляет во вспомогательную функцию (result_input), в которой проверяеться ввод пользователя.
+    """
     print('-' * 50)
     print('Выбирите режим:')
     print('1. Хаос')
@@ -257,31 +179,29 @@ def game_mode():
     print('-' * 50)
     return result_input(2)
 
-
-def questions(user_theme):
-    '''
+def questions(user_theme: str, themes:dict):
+    """
     Одна из вспомогательных функций основной функции game. Она предоставляет список вопросов, которые пользователи могут задавать друг другу.
-    '''
+    """
     print('Нажмите 1, если хотите посмотреть вспомогательные вопросы, и 2, если хотите продолжить')
-    choice = result_input(len(themes))
-    if choice == 1:
-        if len(themes) > 3:
+    mes_user = result_input(len(themes))
+    if mes_user == 1:
+        if len(themes) > 4:
             if user_theme == 1:
-                Locations()
+                locations()
             elif user_theme == 2:
-                Clash_Royal()
+                clash_royale()
             elif user_theme == 3:
-                Games()
+                games()
             elif user_theme == 4:
-                Minecraft()
+                minecraft()
         else:
             other()
 
-
-def Locations():
-    '''
+def locations():
+    """
     Одна из вспомогательных функций основной функции questions. Она выдает список вопросов по теме Локации.
-    '''
+    """
     print('1. Часто ли здесь можно встретить детей?')
     print('2. Здесь обычно шумно или соблюдают тишину?')
     print('3. Нужно ли платить за вход в это место?')
@@ -293,11 +213,10 @@ def Locations():
     print('9. Встречаются ли здесь очереди?')
     print('10. Какая здесь преобладающая цветовая гамма (однотонная или цветная)?')
 
-
-def Clash_Royal():
-    '''
+def clash_royale():
+    """
     Одна из вспомогательных функций основной функции questions. Она выдает список вопросов по теме Clash Royal.
-    '''
+    """
     print('1. Эта карта умеет летать?')
     print('2. Сколько эликсира стоит карта')
     print('3. Эта карта атакует только здания или всех подряд?')
@@ -309,11 +228,10 @@ def Clash_Royal():
     print('9. У карты много здоровья или ее можно убить «Стрелами»?')
     print('10. Карта наносит урон мгновенно или постепенно?')
 
-
-def Games():
-    '''
+def games():
+    """
     Одна из вспомогательных функций основной функции questions. Она выдает список вопросов по теме Видеоигры.
-    '''
+    """
     print('1. Можно ли в этой игре умереть от падения с высоты (с полный запасом здоровья)?')
     print('2. Эта одиночная игра или здесь важна командная работа?')
     print('3. Нужно ли здесь собирать ресурсы (фармить), чтобы стать сильнее?')
@@ -325,11 +243,10 @@ def Games():
     print('9. Твоему персонажу нужно есть, пить или спать, чтобы выжить?')
     print('10. Есть ли в игре какой-то главный злодей (финальный босс)?')
 
-
-def Minecraft():
-    '''
+def minecraft():
+    """
     Одна из вспомогательных функций основной функции questions. Она выдает список вопросов по теме Minecraft.
-    '''
+    """
     print('1. Этот предмет/блок можно найти в обычном мире или нужно идти в другой портал?')
     print('2. Нужен ли специальный инструмент, чтобы это добыть, или можно справиться рукой?')
     print('3. Можно ли этот предмет скрафтить на верстаке?')
@@ -341,11 +258,10 @@ def Minecraft():
     print('9. Нужен ли этот предмет, чтобы создать другой, более сложный?')
     print('10. Является ли этот предмет редким (можно ли его найти только в сундуках данжей)? ')
 
-
 def other():
-    '''
+    """
     Одна из вспомогательных функций основной функции questions. Она выдает список вопросов по темам добавленным пользователем.
-    '''
+    """
     print('1. Как долго ты в этом разбирался, прежде чем начать?')
     print('2. Это занятие требует быстрой реакции или можно долго думать?')
     print('3. Часто ли здесь случаются конфликты или споры?')
@@ -362,26 +278,20 @@ def other():
     print('14. Лучше заниматься этим утром или ночью?')
     print('15. Много ли в этой теме непонятных слов и терминов для обычного человека?')
 
-
 def result_input(ran):
-    '''
-
-    '''
     while True:
-        user_mes = ex_isdigit(input('Выберите номер нужного действия: '))
-
-        if range_digits(user_mes, ran):
-            return int(user_mes)
+        mes_user = input('Выберите номер нужного действия: ')
+        need_val = ex_isdigit(mes_user)
+        if range_digits(need_val, ran):
+            return int(need_val)
         else:
             print('Выберите число из диапозона!')
 
-
-def range_digits(choice, range):
-    choice = int(choice)
-    while not (0 < choice <= range):
+def range_digits(need_val, rang):
+    need_val = int(need_val)
+    while not (0 < need_val <= rang):
         return False
     return True
-
 
 def ex_isdigit(st):
     while not (st.isdigit()):
@@ -389,105 +299,97 @@ def ex_isdigit(st):
         st = input('Выберите номер нужного действия: ')
     return st
 
-
-def classic(lst_players, user_theme, choice=1):
-    if choice == 1:
+def val_shpions(lst_players,shpions):
+    if shpions == 0:
         val_shpion = num_shpion(lst_players)
     else:
         val_shpion = 1
+    return val_shpion
+
+def classic(lst_players, user_theme, themes, shpions=0 ):
+    val_shpion = val_shpions(lst_players,shpions)
     shpion1, shpion2 = shpion(val_shpion, lst_players)
-    loc = locate(user_theme)
-    for i in range(len(lst_players)):
-        see_role(lst_players, i)
-        if lst_players[i] == shpion1 or lst_players[i] == shpion2:
-            print(f"ТЫ ШПИОН! Тема: {list(themes.keys())[user_theme - 1]}")
-            print("-" * 100)
-            time.sleep(5)
-            print("\n" * 50)
+    location, need_theme = locate(user_theme, themes)
+    dist_role_clas(lst_players, need_theme, location, shpion1, shpion2)
+
+def dist_role_clas(lst_players, need_theme, location ,  shpion1, shpion2):
+    for index, name in enumerate(lst_players):
+        see_role(lst_players, index)
+        if shpion1 == name or shpion2 == name:
+            dist_shpion(need_theme)
         else:
-            print(f"ТЫ МИРНЫЙ. Слово: {loc} из Темы: {list(themes.keys())[user_theme - 1]}")
-            print("-" * 100)
-            time.sleep(5)
-            print("\n" * 50)
+            dist_live(location, need_theme)
 
+def dist_shpion(need_theme):
+        print(f"ТЫ ШПИОН! Тема: {need_theme}")
+        print("-" * 100)
+        time.sleep(5)
+        print("\n" * 50)
 
-'''
-    Одна из вспомогательных функций основной функции questions. Она выдает список вопросов по теме Локации.
-    '''
+def dist_live(location, need_theme):
+    print(f"ТЫ МИРНЫЙ. Слово: {location} из Темы: {need_theme}")
+    print("-" * 100)
+    time.sleep(5)
+    print("\n" * 50)
 
-
-def chaos(lst_players, user_theme):
-    chaos = random.randint(1, 100)
-    shpion_num = 1
-    if chaos <= 25:
+def chaos(lst_players, user_theme, themes):
+    mode_chaos = random.randint(1, 100)
+    if mode_chaos <= 25:
         all_shpion(lst_players, user_theme)
-    elif chaos <= 50:
-        all_life(lst_players, user_theme)
-    elif chaos <= 75:
-        random_locate(lst_players, user_theme)
+    elif mode_chaos <= 50:
+        all_life(lst_players, user_theme, themes)
+    elif mode_chaos <= 75:
+        random_locate(lst_players, user_theme, themes)
     else:
-        classic(lst_players, user_theme, 2)
+        classic(lst_players, user_theme, themes, 1)
 
-
-def locate(user_theme):
-    return random.choice(themes[list(themes.keys())[user_theme - 1]])
-
+def locate(user_theme, themes):
+    lst_themes = list(themes)
+    need_theme = lst_themes[user_theme - 1]
+    lst_words = themes[need_theme]
+    choice_word = random.choice(lst_words)
+    return choice_word, need_theme
 
 def shpion(shpion_num, lst_players):
     shpion1 = random.choice(lst_players)
     if shpion_num > 1:
-        shpion2 = random.choice([i for i in lst_players if i != shpion1])
+        lst_without_shpion1 = [i for i in lst_players if i != shpion1]
+        shpion2 = random.choice(lst_without_shpion1)
     else:
         shpion2 = None
     return shpion1, shpion2
-
 
 def see_role(lst_players, i):
     input(f"Игрок {lst_players[i]}, нажми Enter, чтобы увидеть роль...")
     print("\n" * 50)
     print("-" * 100)
 
-
-def all_shpion(lst_players, user_theme):
-    for i in range(len(lst_players)):
+def all_shpion(lst_players, need_theme):
+    for i in enumerate(lst_players):
         see_role(lst_players, i)
-        print(f"ТЫ ШПИОН! Тема: {list(themes.keys())[user_theme - 1]}")
-        print("-" * 100)
-        time.sleep(5)
-        print("\n" * 50)
+        dist_shpion(need_theme)
 
-
-def all_life(lst_players, user_theme):
-    for i in range(len(lst_players)):
-        loc = locate(user_theme)
+def all_life(lst_players, need_theme, themes):
+    for i in enumerate(lst_players):
+        location = locate(need_theme, themes)
         see_role(lst_players, i)
-        print(f"ТЫ МИРНЫЙ. Слово: {loc} из Темы: {list(themes.keys())[user_theme - 1]}")
-        print("-" * 100)
-        time.sleep(5)
-        print("\n" * 50)
+        dist_live(location, need_theme)
 
-
-def random_locate(lst_players, user_theme):
-    for i in range(len(lst_players)):
+def random_locate(lst_players, need_theme, themes):
+    for i in enumerate(lst_players):
+        choice_word = random.choice(need_theme)
         see_role(lst_players, i)
-        print(
-            f"ТЫ МИРНЫЙ. Слово: {random.choice(themes[list(themes.keys())[user_theme - 1]])} из Темы: {list(themes.keys())[user_theme - 1]}")
-        print("-" * 100)
-        time.sleep(5)
-        print("\n" * 50)
-
+        dist_live(choice_word, need_theme)
 
 def general_delete_create_theme(themes):
     print('1. Добавить тему со словами')
     print('2. Удалить тему со словами')
     print('3. Выход в меню')
-    choice = result_input(3)
-    if choice == 1:
+    choice_user = result_input(3)
+    if choice_user == 1:
         create_theme(themes)
-    elif choice == 2:
+    elif choice_user == 2:
         delete_theme(themes)
-
-
 
 def create_theme(themes):
     name_themes = input('Введите название темы: ')
@@ -495,11 +397,9 @@ def create_theme(themes):
     json_dump(themes)
     print('Тема со словами успешна создана!')
 
-
 def json_dump(themes):
     with open('storage.json', 'w', encoding='utf-8') as file:
         json.dump(themes, file, indent=4, ensure_ascii=False)
-
 
 def delete_theme(themes):
     name_themes = input('Введите название темы, которую хотите удалить: ')
@@ -510,19 +410,24 @@ def delete_theme(themes):
     json_dump(themes)
     print('Тема со словами удалена успешно!')
 
-
 def see_themes(themes):
     print('Просмотр тем:')
-    for i in range(len(themes)):
-        print(f'{i + 1}. {list(themes.keys())[i]}')
-    choice = result_input(len(themes))
-    print('\n'.join(themes[list(themes.keys())[int(choice) - 1]]))
+    lst_themes = list(themes)
+    for val, name in enumerate(themes, start=1):
+        print(f'{val}. {name}')
+    theme = result_input(len(themes))
+    need_theme = lst_themes[theme - 1]
+    lst_words = themes[need_theme]
+    print('\n'.join(lst_words))
     print('-' * 100)
 
 
 welcome()
 while is_game:
+    for val in range(0, 101):
+        print(f'Загрузка тем со словами: {val}%', end='\r')
+        time.sleep(0.05)
     main_menu()
-    choice = result_input(4)
-    distribution_menu(choice)
+    choice = result_input(5)
+    is_game = distribution_menu(choice, themes)
     pause = input('Нажмите Enter, чтобы продолжить...')
