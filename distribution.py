@@ -1,5 +1,6 @@
 # Подключаем встроенные модули и библиотеки:
 import random
+import time
 
 # Подключаем свои модули:
 import printer
@@ -26,6 +27,7 @@ def distribution_menu(user_choice: int, themes: dict) -> bool:
     elif user_choice == 4:
         printer.see_themes(themes)
     elif user_choice == 5:
+        print('-' * 100)
         return False
     return True
 
@@ -120,9 +122,13 @@ def result_input(ran: int) -> int:
             if exam.range_digits(mes_user, ran):
                 return int(mes_user)
             else:
+                print('-' * 100)
                 print('Выберите число из диапазона!')
+                print('-' * 100)
         else:
+            print('-' * 100)
             print('Неправильный ввод, Введите только ЦИФРУ!')
+            print('-' * 100)
 
 def delete_create_theme(themes: dict):
     """Выводит меню создания и удаления тем и распределяет выбор пользователя.
@@ -130,14 +136,19 @@ def delete_create_theme(themes: dict):
      Args:
          themes: Словарь тем со словами.
     """
+    print('\n' * 35)
+    print('-' * 100)
     print('1. Добавить тему со словами')
     print('2. Удалить тему со словами')
     print('3. Выход в меню')
+    print('-' * 100)
     choice_user = result_input(3)
     if choice_user == 1:
         cr_del.create_theme(themes)
     elif choice_user == 2:
         cr_del.delete_theme(themes)
+    else:
+        print('-' * 100)
 
 def all_shpion(lst_players: list, user_theme: str):
     """Раздаёт роль Шпиона абсолютно всем игрокам в режиме Хаоса.

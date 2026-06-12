@@ -7,7 +7,7 @@ import distribution as dist
 # Нужные функции
 def welcome():
     """Приветствует пользователя и знакомит с программой при запуске."""
-    print('\n' * 50)
+    print('\n' * 35)
     print('-' * 100)
     print('Вас встречает игра "Шпион"')
     print('Перед началом игры, прошу ознакомиться с правилами! Заранее благодарю за внимание!')
@@ -16,7 +16,7 @@ def welcome():
 
 def main_menu():
     """Выводит главное меню программы, которое отображается после каждого действия."""
-    print('\n' * 50)
+    print('\n' * 35)
     print('-' * 100)
     print('Главное меню:')
     print('1. Правила игры')
@@ -28,6 +28,7 @@ def main_menu():
 
 def rules():
     """Выводит основные правила игры."""
+    print('\n' * 35)
     print('-' * 150)
     print('-------------Основные Правила игры--------------')
     print('0. Вы указываете кол-во игроков, которые примут участие в игре (минимум 3, максимум 10)')
@@ -63,6 +64,7 @@ def choice_theme(themes: dict) -> str:
     Returns:
          Возвращает тему, выбранную пользователем.
     """
+    print('\n' * 35)
     print('-' * 50)
     print('Выбор темы:')
     lst_themes = list(themes)
@@ -79,11 +81,12 @@ def game_mode() -> int:
     Returns:
         Возвращает число, выбранное пользователем.
     """
-    print('-' * 50)
+    print('\n' * 35)
+    print('-' * 100)
     print('Выбирите режим:')
     print('1. Хаос')
     print('2. Классика')
-    print('-' * 50)
+    print('-' * 100)
     return dist.result_input(2)
 
 def see_themes(themes: dict):
@@ -92,13 +95,19 @@ def see_themes(themes: dict):
     Args:
         themes: Словарь тем со словами
     """
+    print('\n' * 35)
+    print('-' * 100)
     print('Просмотр тем:')
     lst_themes = list(themes)
     for val, theme in enumerate(themes, start=1):
         print(f'{val}. {theme}')
+    print('-' * 100)
+
     theme = dist.result_input(len(themes))
     need_theme = lst_themes[theme - 1]
     lst_words = themes[need_theme]
+    print('\n' * 35)
+    print('-' * 100)
     print('\n'.join(lst_words))
     print('-' * 100)
 
@@ -109,10 +118,8 @@ def see_role(lst_players: list, num: int):
        lst_players: Список игроков.
        num: Число для списка, под которым записан определенный игрок.
     """
-    print("\n" * 50)
+    print('\n' * 35)
     input(f"Игрок {lst_players[num]}, нажми Enter, чтобы увидеть роль...")
-    print("\n" * 50)
-    print('-' * 100)
 
 def printer_shpion(need_theme: str):
     """Показывает игроку, что он является Шпионом.
@@ -120,10 +127,11 @@ def printer_shpion(need_theme: str):
     Args:
         need_theme: Тема, выбранная пользователем в начале игры.
     """
+    print('\n' * 35)
+    print('-' * 100)
     print(f"ТЫ ШПИОН! Тема: {need_theme}")
     print("-" * 100)
-    time.sleep(5)
-    print("\n" * 50)
+    time.sleep(4)
 
 def printer_live(secret_word: str, need_theme: str):
     """Показывает пользователю, что он является Мирным.
@@ -132,13 +140,14 @@ def printer_live(secret_word: str, need_theme: str):
         secret_word: Секретное слово, выбранное пользователем в начале игры.
         need_theme: Тема, выбранная пользователем в начале игры.
     """
-    print(f"ТЫ МИРНЫЙ. Слово: {secret_word} из Темы: {need_theme}")
+    print('\n' * 35)
+    print('-' * 100)
+    print(f"ТЫ МИРНЫЙ! Слово: {secret_word} из темы: {need_theme}")
     print("-" * 100)
-    time.sleep(5)
-    print("\n" * 50)
+    time.sleep(4)
 
 all_questions = {
-    'Locations': (
+    'Локации': (
     '1. Часто ли здесь можно встретить детей?\n'
     '2. Здесь обычно шумно или соблюдают тишину?\n'
     '3. Нужно ли платить за вход в это место?\n'
@@ -150,7 +159,7 @@ all_questions = {
     '9. Встречаются ли здесь очереди?\n'
     '10. Какая здесь преобладающая цветовая гамма (однотонная или цветная)?'
 ),
-    'Clash_Royale': (
+    'Clash Royale': (
     '1. Эта карта умеет летать?\n'
     '2. Сколько эликсира стоит карта?\n'
     '3. Эта карта атакует только здания или всех подряд?\n'
@@ -162,7 +171,7 @@ all_questions = {
     '9. У карты много здоровья или ее можно убить «Стрелами»?\n'
     '10. Карта наносит урон мгновенно или постепенно?'
 ),
-    'Games': (
+    'Видеоигры': (
     '1. Можно ли в этой игре умереть от падения с высоты (с полный запасом здоровья)?\n'
     '2. Эта одиночная игра или здесь важна командная работа?\n'
     '3. Нужно ли здесь собирать ресурсы (фармить), чтобы стать сильнее?\n'

@@ -102,9 +102,13 @@ is_game = True # Игра запущена - True, иначе - False.
 
 # Основой цикл игры:
 
+print('\n' * 35)
+print('-' * 100)
 for val in range(0, 101, 10):
     print(f'Загрузка: {val}%' , end='\r')
     time.sleep(0.5)
+print('-' * 100)
+time.sleep(1)
 
 printer.welcome()
 
@@ -113,7 +117,8 @@ while is_game:
     choice = dist.result_input(5)
     is_game = dist.distribution_menu(choice, themes)
     pause = input('Нажмите Enter, чтобы продолжить...')
-print('\n' * 50)
+
+print('\n' * 35)
 print('-' * 100)
 print('Большое спасибо за игру, до скорой встречи!')
 print('-' * 100)
